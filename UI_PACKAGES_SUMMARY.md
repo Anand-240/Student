@@ -136,7 +136,7 @@ import { Button, Card, Statistic } from 'antd';
 To see all UI packages in action:
 ```bash
 npm run dev
-# Visit http://localhost:3000/showcase
+# Visit <your-app-url>/showcase (e.g., http://localhost:3000/showcase)
 ```
 
 ## Compatibility Notes

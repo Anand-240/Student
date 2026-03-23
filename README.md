@@ -74,7 +74,7 @@ src/
    MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database-name
    
    JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
-   NEXT_PUBLIC_API_URL=http://localhost:3000
+   NEXT_PUBLIC_API_URL=<your-api-url>
    ```
 
 4. **Start MongoDB** (if using local MongoDB):
@@ -180,7 +180,7 @@ npm run lint
 |----------|-------------|---------|
 | `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017/student-app` |
 | `JWT_SECRET` | Secret key for JWT signing | `your_secret_key` |
-| `NEXT_PUBLIC_API_URL` | API base URL | `http://localhost:3000` |
+| `NEXT_PUBLIC_API_URL` | API base URL | `<your-api-url>` |
 
 ## Security Notes
 
