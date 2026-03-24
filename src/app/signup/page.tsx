@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { User, Mail, Lock, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react';
+import { signIn } from 'next-auth/react';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -86,17 +87,21 @@ export default function SignupPage() {
         return;
       }
 
-      // Store token
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      // Automatically sign in the user after successful signup using NextAuth
+      const result = await signIn('credentials', {
+        email: formData.email,
+        password: formData.password,
+        redirect: false,
+      });
 
-      // Set cookie for middleware (7 days expiry)
-      const expiryDate = new Date();
-      expiryDate.setDate(expiryDate.getDate() + 7);
-      document.cookie = `token=${data.token}; path=/; expires=${expiryDate.toUTCString()}`;
+      if (result?.error) {
+        setError('Registered successfully, but automatic login failed. Please go to Login.');
+        return;
+      }
 
       // Redirect to homepage
       router.push('/');
+      router.refresh();
     } catch (err) {
       setError('An error occurred. Please try again.');
       console.error(err);

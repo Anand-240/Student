@@ -82,6 +82,14 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+    
+    // Handle Duplicate Email Error from MongoDB
+    if (error.code === 11000) {
+      return NextResponse.json(
+        { error: 'Email already registered' },
+        { status: 400 }
+      );
+    }
 
     return NextResponse.json(
       { error: 'Internal server error' },
