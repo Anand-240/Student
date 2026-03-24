@@ -3,6 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import dbConnect from '@/lib/mongodb';
 import User from '@/models/User';
 import { generateToken } from '@/lib/auth';
+import bcrypt from 'bcryptjs';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -13,13 +14,26 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null;
+        if (!credentials?.email || !credentials?.password) {
+            console.log('Missing credentials');
+            return null;
+        }
 
         await dbConnect();
-        const user = await User.findOne({ email: credentials.email }).select('+password');
-        if (!user) return null;
+        const user = await User.findOne({ email: credentials.email.toLowerCase() }).select('+password');
+        
+        if (!user) {
+            console.log('User not found:', credentials.email.toLowerCase());
+            return null;
+        }
 
-        const isValid = await user.comparePassword(credentials.password);
+        const isValid = await bcrypt.compare(credentials.password, user.password);
+        console.log('--- LOGIN ATTEMPT ---');
+        console.log('Credentials Email:', credentials.email);
+        console.log('Credentials Pass length:', credentials.password.length);
+        console.log('User DB pass:', user.password);
+        console.log('Password valid:', isValid, 'for user:', user.email);
+        
         if (!isValid) return null;
 
         return {
@@ -51,5 +65,5 @@ export const authOptions: NextAuthOptions = {
     error: '/login',
   },
   session: { strategy: 'jwt' },
-  secret: process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET || 'my_super_secret_key_1234567890',
 };

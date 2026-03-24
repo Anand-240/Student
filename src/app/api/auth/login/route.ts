@@ -17,8 +17,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Find user and include password for comparison
-    const user = await User.findOne({ email }).select('+password');
+    // Find user and include password for comparison (lowercase to match schema)
+    const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
 
     if (!user) {
       return NextResponse.json(
