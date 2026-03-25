@@ -6,8 +6,17 @@ const bcrypt = (bcryptModule as any).default || bcryptModule;
 
 export interface IUser extends Document {
   email: string;
-  password: string;
+  password?: string;
   name: string;
+  major?: string;
+  year?: string;
+  phone?: string;
+  location?: string;
+  gpa?: string;
+  profilePhoto?: string;
+  coursesEnrolled?: number;
+  achievements?: number;
+  followers?: number;
   createdAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
@@ -23,7 +32,6 @@ const userSchema = new Schema<IUser>(
     },
     password: {
       type: String,
-      required: [true, 'Please provide a password'],
       minlength: 6,
       select: false,
     },
@@ -31,6 +39,15 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: [true, 'Please provide a name'],
     },
+    major: { type: String, default: 'Undecided' },
+    year: { type: String, default: 'Year 1' },
+    phone: { type: String, default: '' },
+    location: { type: String, default: 'Not specified' },
+    gpa: { type: String, default: 'N/A' },
+    profilePhoto: { type: String, default: '' },
+    coursesEnrolled: { type: Number, default: 0 },
+    achievements: { type: Number, default: 0 },
+    followers: { type: Number, default: 0 },
   },
   {
     timestamps: true,

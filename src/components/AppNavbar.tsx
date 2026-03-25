@@ -35,6 +35,7 @@ export default function AppNavbar() {
     { icon: Users, href: '/community', label: 'Community', theme: 'bg-[#A7F3D0]' },
     { icon: HouseIcon, href: '/housing', label: 'Housing', theme: 'bg-[#A594F1]' },
     { icon: Wallet, href: '/budget', label: 'Budget', theme: 'bg-[#FDC029]' },
+    { icon: User, href: '/profile', label: 'Profile', theme: 'bg-[#EA7A34]' },
   ];
 
   return (

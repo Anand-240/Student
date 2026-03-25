@@ -130,10 +130,10 @@ export default function Profile() {
           >
             <div className="h-24 bg-gradient-to-r from-purple-600 to-pink-600 relative">
                <div className="absolute inset-x-0 bottom-[-40px] flex justify-center">
-                  <div className="relative group shrink-0 w-24 h-24 rounded-full bg-white dark:bg-slate-800 p-1 shadow-lg">
+                  <div className="relative group shrink-0 w-24 h-24 rounded-full bg-white dark:bg-slate-800 p-1">
                     <motion.div
                       whileHover={{ scale: isEditing ? 1.02 : 1.05 }}
-                      className="w-full h-full rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-3xl overflow-hidden shadow-inner"
+                      className="w-full h-full rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-3xl overflow-hidden shadow-md"
                     >
                       {editForm.profilePhoto || profile.profilePhoto ? (
                         <img
@@ -250,7 +250,7 @@ export default function Profile() {
             transition={{ delay: 0.1 }}
             className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8"
           >
-            <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-slate-900 dark:text-white">
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
               <User className="w-5 h-5 text-purple-600" />
               Contact Information
             </h2>
@@ -268,7 +268,7 @@ export default function Profile() {
                 <div className="flex-1 overflow-hidden">
                   <p className="text-xs text-slate-400 mb-0.5">Phone Number</p>
                   {isEditing ? (
-                     <input type="text" className="bg-white dark:bg-slate-600 text-slate-900 dark:text-white w-full px-2 py-1 rounded outline-none" value={editForm.phone} onChange={e=>setEditForm({...editForm, phone: e.target.value})} placeholder="+1 234 567 8900" />
+                     <input type="text" className="bg-white dark:bg-slate-600 w-full px-2 py-1 rounded outline-none" value={editForm.phone} onChange={e=>setEditForm({...editForm, phone: e.target.value})} placeholder="+1 234 567 8900" />
                   ) : (
                      <p className="font-medium text-slate-800 dark:text-slate-200 truncate">{profile.phone || 'Not added yet'}</p>
                   )}
@@ -280,7 +280,7 @@ export default function Profile() {
                 <div className="flex-1 overflow-hidden">
                   <p className="text-xs text-slate-400 mb-0.5">Location</p>
                   {isEditing ? (
-                     <input type="text" className="bg-white dark:bg-slate-600 text-slate-900 dark:text-white w-full px-2 py-1 rounded outline-none" value={editForm.location} onChange={e=>setEditForm({...editForm, location: e.target.value})} placeholder="City, State" />
+                     <input type="text" className="bg-white dark:bg-slate-600 w-full px-2 py-1 rounded outline-none" value={editForm.location} onChange={e=>setEditForm({...editForm, location: e.target.value})} placeholder="City, State" />
                   ) : (
                      <p className="font-medium text-slate-800 dark:text-slate-200 truncate">{profile.location || 'Not set'}</p>
                   )}
@@ -312,30 +312,6 @@ export default function Profile() {
                 <p className="text-4xl font-bold text-white mb-2">{profile.achievements || '0'}</p>
               </motion.div>
           </div>
-          
-          {/* Recent Activity */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8"
-          >
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">Recent Activity</h2>
-            <div className="space-y-4">
-              {['Joined the student platform', 'Updated profile information'].map((activity, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4 + idx * 0.1 }}
-                  className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-700 rounded-lg"
-                >
-                  <div className="w-2 h-2 bg-green-500 rounded-full shrink-0"></div>
-                  <p className="text-slate-700 dark:text-slate-300">{activity}</p>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
         </div>
 
       </div>
