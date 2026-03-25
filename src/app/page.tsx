@@ -2,8 +2,7 @@
 
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import Link from 'next/link';
-import { useRef } from 'react';
-import { useSession, signOut } from 'next-auth/react';
+import { useRef, useEffect, useState } from 'react';
 import {
   Shield,
   BookOpen,
@@ -70,7 +69,16 @@ const modules = [
 ];
 
 export default function Home() {
-  const { data: session } = useSession();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setIsLoggedIn(document.cookie.includes('isLoggedIn=true'));
+  }, []);
+
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    window.location.href = '/login';
+  };
 
   return (
     <div className="relative w-full text-[#1A1A1A] font-sans selection:bg-[#EA7A34] selection:text-[#1A1A1A] bg-[#FDF9F1]">
@@ -82,9 +90,9 @@ export default function Home() {
         </div>
         {/* Top right actions */}
         <div className="flex gap-3 sm:gap-4 pointer-events-auto mr-0 md:mr-8 lg:mr-10 items-center">
-          {session ? (
+          {isLoggedIn ? (
             <button 
-              onClick={() => signOut()}
+              onClick={handleLogout}
               className="bg-[#1A1A1A] text-white px-6 py-2.5 rounded-full font-bold border-[2px] border-[#1A1A1A] shadow-[4px_4px_0_0_#EA7A34] hover:bg-[#EA7A34] hover:text-[#1A1A1A] hover:shadow-[2px_2px_0_0_#1A1A1A] hover:translate-y-1 transition-all"
             >
               Log Out

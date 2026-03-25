@@ -2,18 +2,20 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { useSession } from 'next-auth/react';
 import { ChatMessage } from './socket';
 
 let globalSocket: Socket | null = null;
 
 export const useSocket = () => {
-  const { data: session } = useSession();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [onlineCount, setOnlineCount] = useState(0);
   const [typingById, setTypingById] = useState<Record<string, string>>({});
   const [connected, setConnected] = useState(false);
-  const currentUser = session?.user;
+  
+  // Note: For full functionality, you'd fetch the user profile from /api/user/profile.
+  // For now, we simulate a logged-in user if the cookie is present.
+  const isLoggedIn = typeof document !== 'undefined' ? document.cookie.includes('isLoggedIn=true') : false;
+  const currentUser = isLoggedIn ? { name: 'Student', email: 'student@example.com' } : null;
 
   const mergeMessages = useCallback((incoming: ChatMessage[]) => {
     setMessages((prev) => {

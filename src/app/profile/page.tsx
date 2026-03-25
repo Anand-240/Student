@@ -3,11 +3,18 @@
 import { motion } from 'framer-motion';
 import { User, Mail, Phone, MapPin, Award, BookOpen, Settings, Edit2, Upload, X, Save, Loader2, Camera } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
-import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 
 export default function Profile() {
-  const { data: session, status } = useSession();
+  const [status, setStatus] = useState<'loading' | 'authenticated' | 'unauthenticated'>('loading');
+  const [session, setSession] = useState<any>(null); // For typing compatibility
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      const loggedIn = document.cookie.includes('isLoggedIn=true');
+      setStatus(loggedIn ? 'authenticated' : 'unauthenticated');
+    }
+  }, []);
   
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);

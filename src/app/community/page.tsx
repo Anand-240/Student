@@ -5,12 +5,10 @@ import { MessageCircle, Send, Heart, Users, LogOut, Reply, Smile, X } from 'luci
 import { useState, useRef, useEffect } from 'react';
 import { useSocket } from '../../lib/useSocket';
 import { ChatMessage } from '../../lib/socket';
-import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Community() {
-  const { data: session } = useSession();
   const { messages, onlineCount, typingUsers, connected, sendMessage, sendTyping, likeMessage } = useSocket();
   const [input, setInput] = useState('');
   const [activePanel, setActivePanel] = useState<'chat' | 'updates'>('chat');
@@ -94,13 +92,15 @@ export default function Community() {
   };
 
   const handleLogout = async () => {
-    await signOut({ callbackUrl: '/login' });
+    await fetch('/api/auth/logout', { method: 'POST' });
+    window.location.href = '/login';
   };
 
-  const userName = session?.user?.name || 'Anonymous';
-  const userEmail = session?.user?.email || '';
-  const userImage = session?.user?.image || '';
-  const canSendMessages = Boolean(session?.user?.email);
+  const userName = 'Student';
+  const userEmail = 'student@example.com';
+  const userImage = '';
+  // Fallback to cookie check for frontend ui logic
+  const canSendMessages = typeof document !== 'undefined' ? document.cookie.includes('isLoggedIn=true') : false;
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800">

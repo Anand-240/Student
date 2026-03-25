@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { User, Mail, Lock, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react';
-import { signIn } from 'next-auth/react';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -87,21 +86,8 @@ export default function SignupPage() {
         return;
       }
 
-      // Automatically sign in the user after successful signup using NextAuth
-      const result = await signIn('credentials', {
-        email: formData.email,
-        password: formData.password,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        setError('Registered successfully, but automatic login failed. Please go to Login.');
-        return;
-      }
-
       // Redirect to homepage
-      router.push('/');
-      router.refresh();
+      window.location.href = '/';
     } catch (err) {
       setError('An error occurred. Please try again.');
       console.error(err);

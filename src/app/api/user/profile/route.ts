@@ -1,18 +1,21 @@
-import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/authOptions';
+import { NextRequest, NextResponse } from 'next/server';
+import jwt from 'jsonwebtoken';
 import dbConnect from '@/lib/mongodb';
 import User from '@/models/User';
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
+    const token = req.cookies.get('token')?.value;
+    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    let decoded: any;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET || '1234567890');
+    } catch {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     await dbConnect();
-    const user = await User.findOne({ email: session.user.email });
+    const user = await User.findOne({ email: decoded.email });
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
@@ -24,10 +27,14 @@ export async function GET(req: Request) {
   }
 }
 
-export async function PUT(req: Request) {
+export async function PUT(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
+    const token = req.cookies.get('token')?.value;
+    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    let decoded: any;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET || '1234567890');
+    } catch {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -53,7 +60,7 @@ export async function PUT(req: Request) {
     }
 
     const updatedUser = await User.findOneAndUpdate(
-      { email: session.user.email },
+      { email: decoded.email },
       { $set: updateData },
       { new: true, runValidators: true }
     );

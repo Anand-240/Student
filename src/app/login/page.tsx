@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
-import { signIn } from 'next-auth/react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -31,19 +30,20 @@ export default function LoginPage() {
     }
 
     try {
-      const result = await signIn('credentials', {
-        email: formData.email,
-        password: formData.password,
-        redirect: false,
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email, password: formData.password })
       });
 
-      if (result?.error) {
-        setError('Invalid email or password');
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'Invalid email or password');
         return;
       }
 
-      router.push('/');
-      router.refresh();
+      window.location.href = '/';
     } catch (err) {
       setError('An error occurred. Please try again.');
       console.error(err);
