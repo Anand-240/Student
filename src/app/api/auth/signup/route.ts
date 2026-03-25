@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
 
     // Generate JWT token
     const token = jwt.sign(
-      { 
+      {
         userId: newUser._id.toString(),
         email: newUser.email,
       },
@@ -57,7 +57,8 @@ export async function POST(request: NextRequest) {
       { expiresIn: '7d' }
     );
 
-    return NextResponse.json(
+    // Create response and set auth cookies
+    const response = NextResponse.json(
       {
         message: 'Signup successful',
         user: {
@@ -69,6 +70,26 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
+
+    // HttpOnly JWT cookie for server-side APIs
+    response.cookies.set('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+
+    // Non-HttpOnly flag for client-side checks
+    response.cookies.set('isLoggedIn', 'true', {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+    return response;
   } catch (error: any) {
     console.error('Signup error:', error);
 
