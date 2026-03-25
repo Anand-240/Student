@@ -6,16 +6,6 @@ import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 
 export default function Profile() {
-  const [status, setStatus] = useState<'loading' | 'authenticated' | 'unauthenticated'>('loading');
-  const [session, setSession] = useState<any>(null); // For typing compatibility
-
-  useEffect(() => {
-    if (typeof document !== 'undefined') {
-      const loggedIn = document.cookie.includes('isLoggedIn=true');
-      setStatus(loggedIn ? 'authenticated' : 'unauthenticated');
-    }
-  }, []);
-  
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -32,14 +22,6 @@ export default function Profile() {
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (status === 'authenticated') {
-      fetchProfile();
-    } else if (status === 'unauthenticated') {
-      setLoading(false);
-    }
-  }, [status]);
 
   const fetchProfile = async () => {
     try {
@@ -63,6 +45,10 @@ export default function Profile() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
   const handleSave = async () => {
     setSaving(true);
@@ -107,7 +93,7 @@ export default function Profile() {
     }
   };
 
-  if (loading || status === 'loading') {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
         <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
@@ -117,9 +103,8 @@ export default function Profile() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 text-center px-4">
-        <h1 className="text-2xl font-bold mb-2 text-slate-800 dark:text-slate-200">Please Login to View Profile</h1>
-        <p className="text-slate-500">You need to be signed in to see and edit your profile information.</p>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+        <p className="text-slate-600 dark:text-slate-300">Profile not found.</p>
       </div>
     );
   }

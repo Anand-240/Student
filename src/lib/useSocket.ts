@@ -11,11 +11,64 @@ export const useSocket = () => {
   const [onlineCount, setOnlineCount] = useState(0);
   const [typingById, setTypingById] = useState<Record<string, string>>({});
   const [connected, setConnected] = useState(false);
-  
-  // Note: For full functionality, you'd fetch the user profile from /api/user/profile.
-  // For now, we simulate a logged-in user if the cookie is present.
-  const isLoggedIn = typeof document !== 'undefined' ? document.cookie.includes('isLoggedIn=true') : false;
-  const currentUser: { name: string; email: string; image?: string } | null = isLoggedIn ? { name: 'Student', email: 'student@example.com' } : null;
+  const [currentUser, setCurrentUser] = useState<{ name: string; email: string; image?: string } | null>(null);
+
+  useEffect(() => {
+    let active = true;
+
+    const loadUser = async () => {
+      let base: { name: string; email: string; image?: string } | null = null;
+
+      if (typeof window !== 'undefined') {
+        try {
+          const raw = window.localStorage.getItem('user');
+          if (raw) {
+            const parsed = JSON.parse(raw) as { name?: string; email?: string; image?: string };
+            if (parsed && parsed.email) {
+              base = {
+                name: parsed.name || 'Student',
+                email: parsed.email,
+                image: parsed.image,
+              };
+            }
+          }
+        } catch {
+          // ignore
+        }
+      }
+
+      if (!base) {
+        try {
+          const res = await fetch('/api/user/profile');
+          if (res.ok) {
+            const data = await res.json();
+            if (data?.email) {
+              base = {
+                name: data.name || 'Student',
+                email: data.email,
+                image: data.profilePhoto || '',
+              };
+            }
+          }
+        } catch {
+          // ignore, fall back below
+        }
+      }
+
+      if (!base) {
+        base = { name: 'Student', email: 'student@example.com' };
+      }
+
+      if (active) {
+        setCurrentUser(base);
+      }
+    };
+
+    loadUser();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const mergeMessages = useCallback((incoming: ChatMessage[]) => {
     setMessages((prev) => {

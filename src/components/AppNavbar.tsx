@@ -3,17 +3,13 @@
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { LogOut, Home, Shield, BookOpen, Heart, Users, Home as HouseIcon, Wallet, MessageCircle, User, LogIn, Megaphone } from 'lucide-react';
+import { Home, Shield, BookOpen, Heart, Users, Home as HouseIcon, Wallet, MessageCircle, User, Megaphone } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function AppNavbar() {
   const pathname = usePathname();
   const [hidden, setHidden] = useState(false);
   const [isClientLoggedIn, setIsClientLoggedIn] = useState(false);
-
-  useEffect(() => {
-    setIsClientLoggedIn(document.cookie.includes('isLoggedIn=true'));
-  }, []);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -30,6 +26,11 @@ export default function AppNavbar() {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    setIsClientLoggedIn(document.cookie.includes('isLoggedIn=true'));
   }, []);
 
   const modules = [
@@ -74,39 +75,41 @@ export default function AppNavbar() {
         })}
 
         {/* Separator */}
-        <div className="w-px h-6 bg-gray-200 mx-1"></div>
+        <div className="w-px h-6 bg-gray-200 mx-1" />
 
-        {/* Auth Button */}
+        {/* Auth button */}
         {isClientLoggedIn ? (
-          <div className="relative group shrink-0">
-            <button
-              onClick={() => {
-                document.cookie = 'token=; Max-Age=0; path=/;';
-                document.cookie = 'isLoggedIn=; Max-Age=0; path=/;';
-                window.location.href = '/login';
-              }}
-              className="w-10 h-10 flex items-center justify-center rounded-[12px] transition-all border-[2px] border-transparent hover:border-[#1A1A1A] hover:bg-gray-50 hover:-translate-y-1"
-            >
-              <LogOut className="w-4 h-4 text-gray-600 stroke-[2.5]" />
-            </button>
-            <div className="absolute top-[50px] left-1/2 -translate-x-1/2 bg-[#1A1A1A] text-[#FDF9F1] text-[11px] font-black px-3 py-1.5 rounded-[8px] border-[2px] border-[#1A1A1A] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
-              Log out
-            </div>
-          </div>
+          <button
+            type="button"
+            onClick={async () => {
+              try {
+                await fetch('/api/auth/logout', { method: 'POST' });
+              } catch {
+                // ignore
+              }
+              try {
+                if (typeof window !== 'undefined') {
+                  localStorage.removeItem('user');
+                }
+              } catch {
+                // ignore
+              }
+              if (typeof window !== 'undefined') {
+                window.location.href = '/';
+              }
+            }}
+            className="ml-1 px-3 py-1.5 text-xs font-bold rounded-[12px] border-[2px] border-[#1A1A1A] bg-[#1A1A1A] text-white hover:bg-[#EA7A34] hover:text-[#1A1A1A] hover:-translate-y-0.5 transition-all"
+          >
+            Logout
+          </button>
         ) : (
-          <div className="relative group shrink-0">
-            <Link
-              href="/login"
-              className={`w-10 h-10 flex items-center justify-center rounded-[12px] transition-all border-[2px] ${pathname === '/login' ? 'border-[#1A1A1A] bg-[#A594F1] shadow-sm translate-y-[1px]' : 'border-transparent hover:border-[#1A1A1A] hover:bg-[#A594F1] hover:-translate-y-1'}`}
-            >
-              <LogIn className={`w-4 h-4 ${pathname === '/login' ? 'text-[#1A1A1A] stroke-[2.5]' : 'text-gray-600 stroke-[2.5] group-hover:text-[#1A1A1A]'}`} />
-            </Link>
-            <div className="absolute top-[50px] left-1/2 -translate-x-1/2 bg-[#1A1A1A] text-[#FDF9F1] text-[11px] font-black px-3 py-1.5 rounded-[8px] border-[2px] border-[#1A1A1A] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
-              Log in
-            </div>
-          </div>
+          <Link
+            href="/login"
+            className="ml-1 px-3 py-1.5 text-xs font-bold rounded-[12px] border-[2px] border-[#1A1A1A] bg-white text-[#1A1A1A] hover:bg-[#A594F1] hover:-translate-y-0.5 transition-all"
+          >
+            Login
+          </Link>
         )}
-
       </div>
 
     </motion.div>
