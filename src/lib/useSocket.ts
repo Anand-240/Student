@@ -15,7 +15,7 @@ export const useSocket = () => {
   // Note: For full functionality, you'd fetch the user profile from /api/user/profile.
   // For now, we simulate a logged-in user if the cookie is present.
   const isLoggedIn = typeof document !== 'undefined' ? document.cookie.includes('isLoggedIn=true') : false;
-  const currentUser = isLoggedIn ? { name: 'Student', email: 'student@example.com' } : null;
+  const currentUser: { name: string; email: string; image?: string } | null = isLoggedIn ? { name: 'Student', email: 'student@example.com' } : null;
 
   const mergeMessages = useCallback((incoming: ChatMessage[]) => {
     setMessages((prev) => {
@@ -97,7 +97,7 @@ export const useSocket = () => {
         socket.emit('join_community', {
           name: currentUser.name || 'Anonymous',
           email: currentUser.email || '',
-          image: currentUser.image || '',
+          image: (currentUser as any).image || '',
         });
       };
 
@@ -214,7 +214,7 @@ export const useSocket = () => {
     const msg: ChatMessage = {
       id: crypto.randomUUID(),
       author: currentUser.name || 'Anonymous',
-      avatar: currentUser.image || '👤',
+      avatar: (currentUser as any).image || '👤',
       message: text.trim(),
       replyTo,
       timestamp: new Date().toISOString(),

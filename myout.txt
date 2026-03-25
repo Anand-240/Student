@@ -1,0 +1,24 @@
+ERROR\n
+> student-app@0.1.0 build
+> next build --webpack
+
+▲ Next.js 16.2.1 (webpack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 9.4s
+  Running TypeScript ...
+\n⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+Failed to type check.
+
+./src/lib/useSocket.ts:100:30
+Type error: Property 'image' does not exist on type '{ name: string; email: string; }'.
+
+  [90m 98 |[0m           name: currentUser.name || [32m'Anonymous'[0m,
+  [90m 99 |[0m           email: currentUser.email || [32m''[0m,
+[31m[1m>[0m [90m100 |[0m           image: currentUser.image || [32m''[0m,
+  [90m    |[0m                              [31m[1m^[0m
+  [90m101 |[0m         });
+  [90m102 |[0m       };
+  [90m103 |[0m
+Next.js build worker exited with code: 1 and signal: null
