@@ -66,7 +66,7 @@ export default function LoginPage() {
             placeholder="Email address"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            className="w-full rounded-2xl border-2 border-slate-900 bg-slate-50 px-4 py-3 outline-none"
+            className="w-full rounded-2xl border-2 border-slate-900 bg-slate-50 px-4 py-3 text-slate-900 outline-none"
             autoComplete="email"
           />
           <input
@@ -74,7 +74,7 @@ export default function LoginPage() {
             placeholder="Password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            className="w-full rounded-2xl border-2 border-slate-900 bg-slate-50 px-4 py-3 outline-none"
+            className="w-full rounded-2xl border-2 border-slate-900 bg-slate-50 px-4 py-3 text-slate-900 outline-none"
             autoComplete="current-password"
           />
 

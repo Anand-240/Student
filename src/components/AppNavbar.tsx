@@ -9,7 +9,6 @@ import { motion } from 'framer-motion';
 export default function AppNavbar() {
   const pathname = usePathname();
   const [hidden, setHidden] = useState(false);
-  const [isClientLoggedIn, setIsClientLoggedIn] = useState(false);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -26,11 +25,6 @@ export default function AppNavbar() {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    if (typeof document === 'undefined') return;
-    setIsClientLoggedIn(document.cookie.includes('isLoggedIn=true'));
   }, []);
 
   const modules = [
@@ -77,39 +71,30 @@ export default function AppNavbar() {
         {/* Separator */}
         <div className="w-px h-6 bg-gray-200 mx-1" />
 
-        {/* Auth button */}
-        {isClientLoggedIn ? (
-          <button
-            type="button"
-            onClick={async () => {
-              try {
-                await fetch('/api/auth/logout', { method: 'POST' });
-              } catch {
-                // ignore
-              }
-              try {
-                if (typeof window !== 'undefined') {
-                  localStorage.removeItem('user');
-                }
-              } catch {
-                // ignore
-              }
+        {/* Auth button: always show Logout here */}
+        <button
+          type="button"
+          onClick={async () => {
+            try {
+              await fetch('/api/auth/logout', { method: 'POST' });
+            } catch {
+              // ignore
+            }
+            try {
               if (typeof window !== 'undefined') {
-                window.location.href = '/';
+                localStorage.removeItem('user');
               }
-            }}
-            className="ml-1 px-3 py-1.5 text-xs font-bold rounded-[12px] border-[2px] border-[#1A1A1A] bg-[#1A1A1A] text-white hover:bg-[#EA7A34] hover:text-[#1A1A1A] hover:-translate-y-0.5 transition-all"
-          >
-            Logout
-          </button>
-        ) : (
-          <Link
-            href="/login"
-            className="ml-1 px-3 py-1.5 text-xs font-bold rounded-[12px] border-[2px] border-[#1A1A1A] bg-white text-[#1A1A1A] hover:bg-[#A594F1] hover:-translate-y-0.5 transition-all"
-          >
-            Login
-          </Link>
-        )}
+            } catch {
+              // ignore
+            }
+            if (typeof window !== 'undefined') {
+              window.location.href = '/';
+            }
+          }}
+          className="ml-1 px-3 py-1.5 text-xs font-bold rounded-[12px] border-[2px] border-[#1A1A1A] bg-[#1A1A1A] text-white hover:bg-[#EA7A34] hover:text-[#1A1A1A] hover:-translate-y-0.5 transition-all"
+        >
+          Logout
+        </button>
       </div>
 
     </motion.div>
