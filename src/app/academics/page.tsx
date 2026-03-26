@@ -214,51 +214,56 @@ export default function AcademicsPage() {
             className="flex flex-wrap gap-3 sm:gap-4 mb-10 border-b-2 border-dashed border-[#1A1A1A]/20 pb-6"
           >
             {[
-              { id: 'doubts', label: 'Q&A Board' },
-              { id: 'flashcards', label: 'Flashcards' },
-              { id: 'notes', label: 'Study Hub' },
-              { id: 'polls', label: 'Live Polls' },
-              { id: 'chatbot', label: 'AI Tutor' }
+              { id: 'doubts', label: 'Q&A Board',  activeBg: 'bg-[#A7F3D0]', icon: <MessageCircle className="w-4 h-4" /> },
+              { id: 'flashcards', label: 'Flashcards', activeBg: 'bg-[#FBBF24]', icon: <BookOpen className="w-4 h-4" /> },
+              { id: 'notes', label: 'Study Hub',  activeBg: 'bg-[#A594F1]', icon: <BookOpen className="w-4 h-4" /> },
+              { id: 'polls', label: 'Live Polls', activeBg: 'bg-[#F97316]', icon: <BarChart3 className="w-4 h-4" /> },
+              { id: 'chatbot', label: 'AI Tutor',  activeBg: 'bg-[#93C5FD]', icon: <Sparkles className="w-4 h-4" /> }
             ].map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`${TAB_PILL} ${
+                className={`${TAB_PILL} flex items-center gap-2 ${
                   activeTab === tab.id
-                    ? 'bg-[#A7F3D0] text-[#1A1A1A] -translate-y-0.5'
+                    ? `${tab.activeBg} text-[#1A1A1A] translate-y-0`
                     : 'bg-white text-[#4F4F4F] hover:-translate-y-0.5 hover:bg-[#FDF1DC]'
                 }`}
               >
-                {tab.label}
+                <span className="inline-flex items-center justify-center w-6 h-6 rounded-full border-[1.5px] border-[#1A1A1A] bg-white">
+                  {tab.icon}
+                </span>
+                <span className="tracking-wide text-[11px] sm:text-xs font-black uppercase">{tab.label}</span>
               </button>
             ))}
           </motion.div>
 
           {activeTab === 'doubts' && (
             <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-10">
-              <div className="mb-6 flex flex-col md:flex-row gap-3 md:gap-4 items-stretch md:items-center">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-3 w-5 h-5 text-[#9F9F9F]" />
+              <div className={`${CARD} bg-white mb-8 px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row items-stretch gap-3`}>
+                <div className="flex-1 flex items-center relative">
+                  <Search className="absolute left-4 w-5 h-5 text-[#9F9F9F]" />
                   <input
                     type="text"
-                    placeholder="Search doubts..."
+                    placeholder="Search the Q&A board..."
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-white border-2 border-[#1A1A1A] rounded-2xl text-sm sm:text-base placeholder:text-[#B0A89C] focus:outline-none focus:ring-0 focus:border-[#EA7A34] shadow-[2px_2px_0_0_#1A1A1A]"
+                    className="w-full pl-11 pr-3 py-2.5 sm:py-3 bg-transparent text-sm sm:text-base placeholder:text-[#B0A89C] focus:outline-none"
                   />
                 </div>
-                <button
-                  onClick={() => setModalType('doubt')}
-                  className="px-5 py-3 rounded-2xl font-bold bg-[#A594F1] border-2 border-[#1A1A1A] shadow-[3px_3px_0_0_#1A1A1A] hover:bg-[#9281E0] transition-all flex items-center gap-2 justify-center text-sm"
-                >
-                  + Ask a Doubt
-                </button>
-                <button
-                  className="px-5 py-3 rounded-2xl font-semibold bg-white border-2 border-[#1A1A1A] shadow-[3px_3px_0_0_#1A1A1A] hover:bg-[#FDF1DC] transition-all flex items-center gap-2 justify-center text-sm"
-                >
-                  <Filter className="w-4 h-4" />
-                  Filter
-                </button>
+                <div className="flex items-center justify-end gap-2 sm:gap-3">
+                  <button
+                    className="px-4 sm:px-5 py-2.5 rounded-full font-semibold bg-white border-2 border-[#1A1A1A] shadow-[2px_2px_0_0_#1A1A1A] hover:bg-[#FDF1DC] transition-all text-xs sm:text-sm flex items-center gap-2"
+                  >
+                    <Filter className="w-4 h-4" />
+                    Filter
+                  </button>
+                  <button
+                    onClick={() => setModalType('doubt')}
+                    className="px-4 sm:px-5 py-2.5 rounded-full font-bold bg-[#A7F3D0] border-2 border-[#1A1A1A] shadow-[3px_3px_0_0_#1A1A1A] hover:bg-[#6EE7B7] transition-all text-xs sm:text-sm flex items-center gap-2"
+                  >
+                    + Ask
+                  </button>
+                </div>
               </div>
 
               <div className="space-y-4">
@@ -443,7 +448,7 @@ export default function AcademicsPage() {
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-2xl font-black text-[#1A1A1A] flex items-center gap-2">
                   <BarChart3 className="w-6 h-6 text-[#EA7A34]" />
-                  Anonymous Student Polls
+                  Live Community Polls
                 </h2>
                 <button
                   onClick={() => setModalType('poll')}
@@ -514,9 +519,9 @@ export default function AcademicsPage() {
                 <div className="px-6 py-4 border-b-2 border-[#1A1A1A] bg-[#F8F1E7] flex flex-col">
                   <h2 className="text-xl font-black text-[#1A1A1A] flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-[#A594F1]" />
-                    Academic Query Bot
+                    Smart Agent
                   </h2>
-                  <p className="text-[#7A7468] text-sm">Ask about courses, deadlines, resources, and policies.</p>
+                  <p className="text-[#7A7468] text-sm">Automated course logic and campus routing insights.</p>
                 </div>
                 <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-[#FDF9F1]">
                   {chatMessages.map((msg, i) => (
