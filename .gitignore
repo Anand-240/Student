@@ -47,3 +47,7 @@ Users/
 android-app/.next/
 android-app/src/.next/
 android-app/Users/
+
+react-native-app/.expo/
+react-native-app/dist/
+react-native-app/node_modules/
