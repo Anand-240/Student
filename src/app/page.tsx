@@ -2,7 +2,7 @@
 
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import Link from 'next/link';
-import { useRef, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Shield,
   BookOpen,
@@ -81,12 +81,26 @@ export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
+    if (typeof document === 'undefined') return;
     setIsLoggedIn(document.cookie.includes('isLoggedIn=true'));
   }, []);
 
   const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' });
-    window.location.href = '/login';
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch {
+      // ignore network errors, still redirect
+    }
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('user');
+      }
+    } catch {
+      // ignore storage errors
+    }
+    if (typeof window !== 'undefined') {
+      window.location.href = '/';
+    }
   };
 
   return (
@@ -100,18 +114,33 @@ export default function Home() {
         {/* Top right actions */}
         <div className="flex gap-3 sm:gap-4 pointer-events-auto mr-0 md:mr-8 lg:mr-10 items-center">
           {isLoggedIn ? (
-            <button 
-              onClick={handleLogout}
-              className="bg-[#1A1A1A] text-white px-6 py-2.5 rounded-full font-bold border-2 border-[#1A1A1A] shadow-[4px_4px_0_0_#EA7A34] hover:bg-[#EA7A34] hover:text-[#1A1A1A] hover:shadow-[2px_2px_0_0_#1A1A1A] hover:translate-y-1 transition-all"
-            >
-              Log Out
-            </button>
+            <>
+              <Link
+                href="/dashboard"
+                className="bg-white text-[#1A1A1A] px-6 py-2.5 rounded-xl font-bold border-2 border-[#1A1A1A] shadow-[4px_4px_0_0_#1A1A1A] hover:translate-y-1 hover:shadow-[2px_2px_0_0_#1A1A1A] transition-all"
+              >
+                Dashboard
+              </Link>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="bg-[#1A1A1A] text-white px-6 py-2.5 rounded-full font-bold border-2 border-[#1A1A1A] shadow-[4px_4px_0_0_#EA7A34] hover:bg-[#EA7A34] hover:text-[#1A1A1A] hover:shadow-[2px_2px_0_0_#1A1A1A] hover:translate-y-1 transition-all"
+              >
+                Log out
+              </button>
+            </>
           ) : (
             <>
-              <Link href="/login" className="bg-white text-[#1A1A1A] px-6 py-2.5 rounded-xl font-bold border-2 border-[#1A1A1A] shadow-[4px_4px_0_0_#1A1A1A] hover:translate-y-1 hover:shadow-[2px_2px_0_0_#1A1A1A] transition-all">
-                Log In
+              <Link
+                href="/login"
+                className="bg-white text-[#1A1A1A] px-6 py-2.5 rounded-xl font-bold border-2 border-[#1A1A1A] shadow-[4px_4px_0_0_#1A1A1A] hover:translate-y-1 hover:shadow-[2px_2px_0_0_#1A1A1A] transition-all"
+              >
+                Log in
               </Link>
-              <Link href="/signup" className="bg-[#A594F1] text-[#1A1A1A] px-6 py-2.5 rounded-xl font-bold border-2 border-[#1A1A1A] shadow-[4px_4px_0_0_#1A1A1A] hover:bg-[#9281e0] hover:translate-y-1 hover:shadow-[2px_2px_0_0_#1A1A1A] transition-all">
+              <Link
+                href="/signup"
+                className="bg-[#A594F1] text-[#1A1A1A] px-6 py-2.5 rounded-xl font-bold border-2 border-[#1A1A1A] shadow-[4px_4px_0_0_#1A1A1A] hover:bg-[#9281e0] hover:translate-y-1 hover:shadow-[2px_2px_0_0_#1A1A1A] transition-all"
+              >
                 Register
               </Link>
             </>
